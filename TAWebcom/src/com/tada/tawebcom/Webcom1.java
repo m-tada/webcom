@@ -12,6 +12,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Xml;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class Webcom1 extends Activity {
@@ -26,9 +28,14 @@ static private int mArticleNum;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_webcom1);
-		mView = (TextView)findViewById(R.id.view);
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
-		mView.setText(new String(httpGet(createURL())));
+		getArticle(createURL());
+		ListView list = (ListView)findViewById(R.id.ListView01);
+		list.setAdapter(new ArrayAdapter<String>(this,R.layout.rowitem, mArticleTitle));
+
+		//mView = (TextView)findViewById(R.id.view);
+		//
+		//mView.setText(new String(httpGet(createURL())));
 	}
 
 	public String createURL(){
@@ -86,4 +93,18 @@ static private int mArticleNum;
 		     } catch (IOException e) {
 		  }
 	}
+
+	public static void getArticle(String strURL){
+		try{
+			URL url=new URL(strURL);
+			URLConnection connection = url.openConnection();
+			connection.setDoInput(true);
+			InputStream stream = connection.getInputStream();
+			readXML(stream);
+			stream.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 }
